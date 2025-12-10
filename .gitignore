@@ -1,0 +1,122 @@
+############################
+# ✅ OS & Editor Junk
+############################
+*.swp
+*.swo
+*.tmp
+*.bak
+*.old
+*~
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.code-workspace
+
+############################
+# ✅ Build System (CMake / Make)
+############################
+build/
+Build/
+out/
+bin/
+obj/
+cmake-build-debug/
+cmake-build-release/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+install_manifest.txt
+
+############################
+# ✅ Compiled Binaries
+############################
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+*.ilk
+
+############################
+# ✅ Vulkan / Shader Artifacts
+############################
+*.spv        # Compiled Vulkan shaders
+*.cache
+*.pipeline_cache
+shader_cache/
+pipelines/
+
+############################
+# ✅ Logs & Crash Dumps
+############################
+*.log
+logs/
+crash_dump/
+*.dmp
+
+############################
+# ✅ Third-Party & External Libraries
+############################
+external/
+vendor/
+third_party/
+deps/
+
+# Uncomment if you bundle GLFW/Vulkan SDK locally
+# glfw/
+# VulkanSDK/
+
+############################
+# ✅ Assets (Optional Control)
+############################
+# If assets are LARGE and downloaded externally:
+# assets/
+# textures/
+# models/
+
+# If assets are part of your repo, REMOVE the above lines
+
+############################
+# ✅ Profiling / GPU Captures
+############################
+RenderDocCaptures/
+NsightCaptures/
+*.rdc
+
+############################
+# ✅ Visual Studio Specific
+############################
+.vs/
+*.sln.docstates
+*.vcxproj.user
+*.VC.db
+ipch/
+
+############################
+# ✅ Linux Specific
+############################
+*.o
+*.lo
+*.la
+
+############################
+# ✅ MacOS Specific
+############################
+*.xcworkspace
+*.xcodeproj
+DerivedData/
+
+############################
+# ✅ Environment & Secrets
+############################
+.env
+.env.local
+.env.development
+.env.production
