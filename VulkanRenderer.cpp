@@ -447,7 +447,7 @@ namespace EngineCore {
 		attributeDescriptions[0].binding = 0;								// Which binding the data comes from (should match above)
 		attributeDescriptions[0].location = 0;								// Location directive of input in vertex shader
 		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;		// Format of data (also helps define size of data)
-		attributeDescriptions[0].offset = offsetof(Vertex, pos);		// Offset of attribute in vertex struct
+		attributeDescriptions[0].offset = offsetof(Vertex, pos);			// Offset of attribute in vertex struct
 
 		// Color Attribute
 		attributeDescriptions[1].binding = 0;
@@ -456,7 +456,7 @@ namespace EngineCore {
 		attributeDescriptions[1].offset = offsetof(Vertex, col);
 
 
-		// tells Vulkan how to interpret the raw bytes in your vertex buffers when building a graphics pipeline.
+		// Tells Vulkan how to interpret the raw bytes in your vertex buffers when building a graphics pipeline.
 		/*
 		How is each vertex structured in memory ?
 		(binding descriptions)
@@ -688,7 +688,7 @@ namespace EngineCore {
 		renderPassBeginInfo.renderArea.extent = swapChainExtent;						// Extent of render area to run within
 		// Clear values for each attachment the render pass uses
 		VkClearValue clearColour[] = {
-			{0.6f, 0.65f, 0.4, 1.0f}
+			{0.6f, 0.65f, 0.4f, 1.0f}
 		};
 		renderPassBeginInfo.pClearValues = clearColour;									// Pointer to array of clear values
 		renderPassBeginInfo.clearValueCount = 1;										// Number of clear values
