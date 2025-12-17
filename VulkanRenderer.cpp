@@ -158,8 +158,8 @@ namespace EngineCore {
 		{
 			vkDestroyBuffer(mainDevice.logicalDevice, vpUniformBuffers[i], nullptr);
 			vkFreeMemory(mainDevice.logicalDevice, vpUniformBuffersMemory[i], nullptr);
-			vkDestroyBuffer(mainDevice.logicalDevice, modelDUniformBuffers[i], nullptr);
-			vkFreeMemory(mainDevice.logicalDevice, modelDUniformBuffersMemory[i], nullptr);
+			/*vkDestroyBuffer(mainDevice.logicalDevice, modelDUniformBuffers[i], nullptr);
+			vkFreeMemory(mainDevice.logicalDevice, modelDUniformBuffersMemory[i], nullptr);*/
 		}
 
 		for (size_t i = 0; i < meshList.size(); i++)
