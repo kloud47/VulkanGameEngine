@@ -7,28 +7,46 @@
 
 #include "utilities.h"
 
+struct Model
+{
+	glm::mat4 model;
+};
+
 class Mesh
 {
 public:
 	Mesh();
 	Mesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, VkQueue transferQueue, 
-		VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
+		VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
+
+	void setModel(glm::mat4 newModel);
+	const Model& getUboModel() const;
 
 	int getVertexCount();
 	VkBuffer getVertexBuffer();
 
-	void destroyVertexBuffer();
+	int getIndexCount();
+	VkBuffer getIndexBuffer();
+
+	void destroyBuffers();
 
 	~Mesh();
 
 private:
+	Model model;
+
 	int vertexCount;
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 
+	int indexCount;
+	VkBuffer indexBuffer;
+	VkDeviceMemory indexBufferMemory;
+
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
 
-	VkBuffer createVertexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
+	void createVertexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
+	void createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<uint32_t>* indices);
 };
 

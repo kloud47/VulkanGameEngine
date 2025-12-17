@@ -7,6 +7,7 @@
 #include <glm.hpp>
 
 const int MAX_FRAME_DRAWS = 2;
+const int MAX_OBJECTS = 2;
 
 const std::vector<const char*> deviceExtensions = {
 	VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -69,6 +70,23 @@ static std::vector<char> readFile(const std::string& filename)
 	return fileBuffer;
 }
 
+static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties)
+{
+	// Get properties of physical device memory
+	VkPhysicalDeviceMemoryProperties memoryProperties;
+	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
+		if ((allowedTypes & (1 << i)) &&
+			(memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {   // Index of memory type that is allowed and has required properties
+			// This memory type is Valid return its index
+			return i;
+		}
+	}
+
+	throw std::runtime_error("Failed to find suitable memory type for buffer.");
+}
+
 static void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage,
 	VkMemoryPropertyFlags memoryProperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 {
@@ -104,21 +122,6 @@ static void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDev
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
-static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties)
-{
-	// Get properties of physical device memory
-	VkPhysicalDeviceMemoryProperties memoryProperties;
-	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-
-	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
-		if ((allowedTypes & (1 << i)) &&
-			(memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {   // Index of memory type that is allowed and has required properties
-			// This memory type is Valid return its index
-			return i;
-		}
-	}
-}
-
 static void copyBuffer(VkDevice device, VkQueue transferQueue, VkCommandPool transferCommandPool,
 	VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize bufferSize)
 {
@@ -135,7 +138,35 @@ static void copyBuffer(VkDevice device, VkQueue transferQueue, VkCommandPool tra
 	// Allocate command buffer from pool
 	vkAllocateCommandBuffers(device, &allocInfo, &transferCommandBuffer);
 
+	// Begin command buffer recording
 	VkCommandBufferBeginInfo beginInfo = {};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // 
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // We will only use the command buffer once
+
+	vkBeginCommandBuffer(transferCommandBuffer, &beginInfo);
+
+	// Region of data to copy from and to
+	VkBufferCopy copyRegion = {};
+	copyRegion.srcOffset = 0; // Optional
+	copyRegion.dstOffset = 0; // Optional
+	copyRegion.size = bufferSize;
+
+
+	vkCmdCopyBuffer(transferCommandBuffer, srcBuffer, dstBuffer, 1, &copyRegion); // Issue the copy command
+
+	// End command buffer recording
+	vkEndCommandBuffer(transferCommandBuffer);
+
+	// Submit command buffer to the queue
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &transferCommandBuffer;
+
+	// Submit transfer command to transfer queue and wait until it is finished
+	vkQueueSubmit(transferQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(transferQueue);
+
+	// Free the command buffer now that it has been executed
+	vkFreeCommandBuffers(device, transferCommandPool, 1, &transferCommandBuffer);
 }
